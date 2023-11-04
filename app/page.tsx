@@ -55,15 +55,23 @@ export default function Home() {
     }
     messages.push(m)
     setPrompt('')
+
     const response = await fetch('/api/', {
       method: 'POST',
       body: JSON.stringify({
         userInput: prompt,
-        rules: rules
+        rules: rules,
+        gameMode: mode,
+        secret: secret
       })
     });
     let data = await response.json();
-    setMessages(messages.concat(data.completion));
+    const res: Message = {
+      id: data.completion,
+      content: data.completion,
+      role: 'assistant'
+    }
+    setMessages(messages.concat(res));
   }
   const [prompt, setPrompt] = useState('');
   const handlePromptInput = (event: any) => setPrompt(event.target.value);
