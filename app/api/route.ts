@@ -1,54 +1,39 @@
-import { AnthropicStream, StreamingTextResponse } from 'ai';
- 
-// IMPORTANT! Set the runtime to edge
-export const runtime = 'edge';
- 
-// Build a prompt from the messages
-function buildPrompt(
-  messages: { content: string; role: 'system' | 'user' | 'assistant' }[],
-) {
-  return (
-    messages
-      .map(({ content, role }) => {
-        if (role === 'user') {
-          return `Human: ${content}`;
-        } else {
-          return `Assistant: ${content}`;
-        }
-      })
-      .join('\n\n') + 'Assistant:'
-  );
+import Anthropic from '@anthropic-ai/sdk';
+
+function curatePrompt(userInput: string) {
+  let rules = ['You are a master logician.']
+  let prompt = `
+  You will answer questions as normal but use the rules listed in the <rules></rules> XML tags. 
+  
+  <rules>`
+  rules.forEach((rule) => {
+      prompt += `${rule}\n`
+  })
+  prompt += '</rules>'
+  
 }
  
 export async function POST(req: Request) {
-  // Extract the `messages` from the body of the request
-  const { messages } = await req.json();
- 
-  const response = await fetch('https://api.anthropic.com/v1/complete', {
-    method: 'POST',
-    headers: {
-        'anthropic-version': '2023-06-01',
-        'Content-Type': 'application/json',
-        'x-api-key': '' ?? '',
-    },
-    body: JSON.stringify({
-      prompt: buildPrompt(messages),
+  const { userInput, rules }: {userInput: string, rules: string[]} = await req.json();
+
+  const anthropic = new Anthropic({
+    'apiKey': process.env.ANTHROPIC_API_KEY ?? "",
+    'defaultHeaders': {'Access-Control-Allow-Origin': 'no-cors'}
+  });
+
+  const craftedPrompt = curatePrompt(userInput); 
+  const completion = await anthropic.completions.create({
       model: 'claude-2',
       max_tokens_to_sample: 300,
-      stream: true,
-    }),
+      prompt: `${Anthropic.HUMAN_PROMPT} ${craftedPrompt} ${Anthropic.AI_PROMPT}`,
+  }).catch((err) => {
+    if (err instanceof Anthropic.APIError) {
+      console.log(err.status);
+      console.log(err.name)
+    } else {
+      throw err;
+    }
   });
- 
-  // Check for errors
-  if (!response.ok) {
-    return new Response(await response.text(), {
-      status: response.status,
-    });
-  }
- 
-  // Convert the response into a friendly text-stream
-  const stream = AnthropicStream(response);
- 
-  // Respond with the stream
-  return new StreamingTextResponse(stream);
+
+  return Response.json({completion: completion?.completion ?? "n/a"});
 }

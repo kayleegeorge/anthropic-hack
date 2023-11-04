@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 const anthropic = new Anthropic({
-  'apiKey': "",
+  'apiKey': process.env.ANTHROPIC_API_KEY ?? "",
   'defaultHeaders': {'Access-Control-Allow-Origin': 'no-cors'}
 });
 

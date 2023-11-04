@@ -47,7 +47,6 @@ export default function Home() {
     else setMode('Game')
   }
 
-  // prompt
   const handleClick = async () => {
     const m: Message = {
       id: prompt,
@@ -56,10 +55,15 @@ export default function Home() {
     }
     messages.push(m)
     setPrompt('')
-    const response = await sendToAnthropic(prompt, rules)
-    console.log(response)
-
-    
+    const response = await fetch('/api/', {
+      method: 'POST',
+      body: JSON.stringify({
+        userInput: prompt,
+        rules: rules
+      })
+    });
+    let data = await response.json();
+    setMessages(messages.concat(data.completion));
   }
   const [prompt, setPrompt] = useState('');
   const handlePromptInput = (event: any) => setPrompt(event.target.value);
