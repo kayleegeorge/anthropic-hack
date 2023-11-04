@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PaperPlaneRight } from "@phosphor-icons/react";
 import {
   Box,
@@ -32,16 +32,17 @@ export type Message = {
 };
 
 export default function Home() {
-  const [mode, setMode] = useState<GameMode>("Playground");
-  const secret = generate({ minLength: 4, maxLength: 12 })[0];
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { messages, input, handleInputChange, append, setInput } = useChat({
+    api: "/api/v2",
+  });
 
-  // rules
+  const [mode, setMode] = useState<GameMode>("Playground");
+  const secret = generate({ minLength: 4, maxLength: 12 }) as string;
+
+  // Rules
   const [rule, setRule] = useState<string>("");
   const [rules, setRules] = useState<string[]>([]);
   const [rulesList, setRulesList] = useState<any[]>([]);
-
-  // handle adding a rule
   const handleAddRule = (event: any) => {
     rules.push(rule);
     setRules(rules);
@@ -49,7 +50,7 @@ export default function Home() {
     setRulesList(rulesList);
   };
 
-  // game mode
+  // Game Mode
   const handleMode = (event: any) => {
     if (mode == "Game") setMode("Playground");
     else setMode("Game");
@@ -57,36 +58,27 @@ export default function Home() {
   const [win, setWin] = useState<boolean>(false);
 
   const handleClick = async () => {
+    // The new message.
     const m: Message = {
-      id: prompt,
-      content: prompt,
+      id: input,
+      content: input,
       role: "user",
     };
-    messages.push(m);
-    setPrompt("");
 
-    const response = await fetch("/api/", {
-      method: "POST",
-      body: JSON.stringify({
-        userInput: prompt,
-        rules: rules,
-        gameMode: mode,
-        secret: secret,
-      }),
-    });
-    let data = await response.json();
-    const res: Message = {
-      id: data.completion,
-      content: data.completion,
-      role: "assistant",
-    };
-    setMessages(messages.concat(res));
-    if (res.content.includes(secret)) {
-      setWin(true);
-    }
+    // Append the message to trigger an API response.
+    setInput("");
+    append(m);
   };
-  const [prompt, setPrompt] = useState("");
-  const handlePromptInput = (event: any) => setPrompt(event.target.value);
+
+  // On message change, make sure the secret doesn't appear in the messages.
+  useEffect(() => {
+    console.log(messages, secret);
+    for (let i = 0; i < messages.length; i++) {
+      if (messages[i].content.includes(secret)) {
+        setWin(true);
+      }
+    }
+  }, [secret, messages]);
 
   return (
     <Flex
@@ -116,17 +108,6 @@ export default function Home() {
             Why Red Team?
           </Button>
         </Flex>
-        {/* <Flex flexDirection={'column'} width={'400px'}>
-        Your Rules
-        <VStack
-          divider={<StackDivider borderColor='gray.200' />}
-          spacing={4}
-          align='stretch'
-        >
-          {rulesList}
-        </VStack>
-      </Flex> */}
-
         <Flex flexDirection={"column"} width={"700px"} margin={"auto"}>
           <Text marginBottom={"8px"}>Break Claude</Text>
           <Flex
@@ -153,7 +134,6 @@ export default function Home() {
                 </div>
               ))}
             </Flex>
-
             <Flex
               gap="8px"
               width={"100%"}
@@ -169,8 +149,8 @@ export default function Home() {
                 placeholder="query here"
                 backgroundColor={"#454654"}
                 border={"none"}
-                value={prompt}
-                onChange={handlePromptInput}
+                value={input}
+                onChange={handleInputChange}
                 _placeholder={{ opacity: 10, color: "gray" }}
               />
               <Button
