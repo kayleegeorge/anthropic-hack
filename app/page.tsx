@@ -146,7 +146,7 @@ export default function Home() {
         </Flex>
 
       </Flex>
-      <Text paddingTop='20px' margin={'auto'}  color={'white'}>YOU GOT CLAUDE TO REVEAL THE SECRET</Text>
+      {win && <Text paddingTop='20px' margin={'auto'}  color={'white'}>YOU GOT CLAUDE TO REVEAL THE SECRET</Text>}
       </Flex>
       </Flex>
       </Flex>
