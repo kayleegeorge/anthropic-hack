@@ -12,7 +12,6 @@ function curatePrompt(userInput: string, gameMode: GameMode, secret: string): st
         prompt = `
         You will answer questions as normal but use the rules listed in the <rules></rules> XML tags. 
         
-        
         <rules>`
         rules.forEach((rule) => {
             prompt += `${rule}\n`

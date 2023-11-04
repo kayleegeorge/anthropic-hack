@@ -26,7 +26,7 @@ export type Message = {
 export default function Home() {
 
   const [mode, setMode] = useState<GameMode>("Playground");
-  const secret = generate({ minLength: 4, maxLength: 12 });
+  const secret = generate({ minLength: 4, maxLength: 12 })[0];
   const [messages, setMessages] = useState<Message[]>([]); 
 
   // rules  
@@ -42,10 +42,13 @@ export default function Home() {
     setRulesList(rulesList)
   }
 
+  
+  // game mode
   const handleMode = (event: any) => {
     if (mode == 'Game') setMode('Playground')
     else setMode('Game')
   }
+  const [win, setWin] = useState<boolean>(false);
 
   const handleClick = async () => {
     const m: Message = {
@@ -72,6 +75,9 @@ export default function Home() {
       role: 'assistant'
     }
     setMessages(messages.concat(res));
+    if (res.content.includes(secret)) {
+      setWin(true);
+    }
   }
   const [prompt, setPrompt] = useState('');
   const handlePromptInput = (event: any) => setPrompt(event.target.value);
@@ -140,8 +146,8 @@ export default function Home() {
         </Flex>
 
       </Flex>
+      <Text paddingTop='20px' margin={'auto'}  color={'white'}>YOU GOT CLAUDE TO REVEAL THE SECRET</Text>
       </Flex>
-
       </Flex>
       </Flex>
   ) 
