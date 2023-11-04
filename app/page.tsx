@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { sendToAnthropic } from "./api/anthropic";
 import { PaperPlaneRight } from "@phosphor-icons/react";
 import {
   Box,
@@ -33,13 +32,9 @@ export type Message = {
 };
 
 export default function Home() {
-  const { messages, input, handleInputChange, handleSubmit } = useChat({
-    api: "/api/v2",
-  });
-
   const [mode, setMode] = useState<GameMode>("Playground");
-  const secret = generate({ minLength: 4, maxLength: 12 });
-  const [messagesV1, setMessages] = useState<Message[]>([]);
+  const secret = generate({ minLength: 4, maxLength: 12 })[0];
+  const [messages, setMessages] = useState<Message[]>([]);
 
   // rules
   const [rule, setRule] = useState<string>("");
@@ -54,10 +49,12 @@ export default function Home() {
     setRulesList(rulesList);
   };
 
+  // game mode
   const handleMode = (event: any) => {
     if (mode == "Game") setMode("Playground");
     else setMode("Game");
   };
+  const [win, setWin] = useState<boolean>(false);
 
   const handleClick = async () => {
     const m: Message = {
@@ -65,17 +62,28 @@ export default function Home() {
       content: prompt,
       role: "user",
     };
-    messagesV1.push(m);
+    messages.push(m);
     setPrompt("");
+
     const response = await fetch("/api/", {
       method: "POST",
       body: JSON.stringify({
         userInput: prompt,
         rules: rules,
+        gameMode: mode,
+        secret: secret,
       }),
     });
     let data = await response.json();
-    setMessages(messagesV1.concat(data.completion));
+    const res: Message = {
+      id: data.completion,
+      content: data.completion,
+      role: "assistant",
+    };
+    setMessages(messages.concat(res));
+    if (res.content.includes(secret)) {
+      setWin(true);
+    }
   };
   const [prompt, setPrompt] = useState("");
   const handlePromptInput = (event: any) => setPrompt(event.target.value);
@@ -138,7 +146,7 @@ export default function Home() {
               borderBottom={"1px"}
               borderBottomColor={"#454654"}
             >
-              {messagesV1.map((m) => (
+              {messages.map((m) => (
                 <div key={m.id}>
                   {m.role === "user" ? "User: " : "AI: "}
                   {m.content}
@@ -172,29 +180,13 @@ export default function Home() {
               >
                 <PaperPlaneRight color="lightgray" size={20} />
               </Button>
-
-              <div className="mx-auto w-full max-w-md py-24 flex flex-col stretch">
-                {messages.map((m) => (
-                  <div key={m.id}>
-                    {m.role === "user" ? "User: " : "AI: "}
-                    {m.content}
-                  </div>
-                ))}
-
-                <form onSubmit={handleSubmit}>
-                  <label>
-                    Say something...
-                    <input
-                      className="fixed w-full max-w-md bottom-0 border border-gray-300 rounded mb-8 shadow-xl p-2"
-                      value={input}
-                      onChange={handleInputChange}
-                    />
-                  </label>
-                  <button type="submit">Send</button>
-                </form>
-              </div>
             </Flex>
           </Flex>
+          {win && (
+            <Text paddingTop="20px" margin={"auto"} color={"white"}>
+              YOU GOT CLAUDE TO REVEAL THE SECRET
+            </Text>
+          )}
         </Flex>
       </Flex>
     </Flex>
