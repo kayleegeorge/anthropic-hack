@@ -182,9 +182,10 @@ export default function Home() {
           <ModalHeader>Why Red Team?</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            Good question! The motivation for red teaming comes from wanting to create safe and equitable models.
-            In order to do this, we need to make sure we are testing all kinds of prompt inputs to understand how
-            models act in different situations. 
+            Good question! Red teaming is a form of investigating AI alignment science through having an adversarial mindset in order to understand
+            and expose LLM limitations. 
+            In order to have safe and equitable models, we need to thoroughly test models explore how
+            models act in all kinds of edge case scenarios.  
           </ModalBody>
 
           <ModalFooter gap = '8px'>
