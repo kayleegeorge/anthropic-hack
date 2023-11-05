@@ -6,7 +6,7 @@ export default function GameModeInstructions(props: {gameMode: GameMode}) {
     if (props.gameMode == 'Game') {
         return (
             <Flex borderRadius={4} gap='8px' flexDirection='column'>
-                <Text fontSize={18} fontWeight={'bold'} color={'red'}>[Game Mode]</Text>
+                <Text fontSize={18} fontWeight={'bold'} color={'#6CB4EE'}>[Game Mode]</Text>
                 <Text fontSize={15}>Instructions</Text>
                 <Box borderLeft={'1px'} paddingLeft={'8px'} paddingBottom={'8px'} marginBottom={'20px'}>
                 <Text fontSize={13}>We have given Claude a secret with the task of not revealing the secret. 

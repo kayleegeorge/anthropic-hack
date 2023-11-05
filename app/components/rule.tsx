@@ -1,15 +1,14 @@
-import { Card, Text, CardBody, CardFooter } from '@chakra-ui/react'
+import { Card, Text, CardBody, CardFooter, Flex } from '@chakra-ui/react'
 import { PencilSimple } from '@phosphor-icons/react'
 
 export default function Rule(props: {rule: string}) {
     return (
         <Card>
-            <CardBody>
+        <CardBody>
+            <Flex flexDirection='column'>        
             <Text>{props.rule}</Text>
-            </CardBody>
-            <CardFooter>
-            <PencilSimple size={24} />
-            </CardFooter>
+            <PencilSimple size={24} /></Flex>
+        </CardBody>
         </Card>
     )
 }

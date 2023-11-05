@@ -5,6 +5,7 @@ import * as dotenv from 'dotenv';
 import { JetBrains_Mono } from 'next/font/google'
 export const jetbrains = JetBrains_Mono({ subsets: ['latin'] })
 
+
 function MyApp({ Component, pageProps }: AppProps) {
   require('dotenv').config()
   return (
@@ -14,6 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           font-family: ${jetbrains.style.fontFamily};
         }
       `}</style>
+      
         <Component {...pageProps} />
     </ChakraProvider>
   )

@@ -1,3 +1,4 @@
+import { GameMode } from "@/app/page";
 import Anthropic from "@anthropic-ai/sdk";
 import { AnthropicStream, StreamingTextResponse } from "ai";
 
@@ -6,18 +7,18 @@ export const runtime = "edge";
 
 // Build a prompt from the messages
 function buildPrompt(
-  messages: { content: string; role: "system" | "user" | "assistant" }[]
+  messages: { content: string; role: "system" | "user" | "assistant" }[] 
 ) {
   return (
     messages
       .map(({ content, role }) => {
         if (role === "user") {
-          return `Human: ${content}`;
+          return `${Anthropic.HUMAN_PROMPT} ${content}`;
         } else {
-          return `Assistant: ${content}`;
+          return `${Anthropic.AI_PROMPT} ${content}`;
         }
       })
-      .join("\n\n") + "Assistant:"
+      .join("\n\n") + `${Anthropic.AI_PROMPT}`
   );
 }
 
@@ -27,13 +28,15 @@ export async function POST(req: Request) {
 
   const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY ?? "",
-    defaultHeaders: { "Access-Control-Allow-Origin": "no-cors" },
   });
+  const prompt = buildPrompt(messages);
+  console.log(prompt)
+  console.log('---------')
 
   const response = await anthropic.completions.create({
-    model: "claude-v1",
+    model: "claude-2",
     max_tokens_to_sample: 300,
-    prompt: buildPrompt(messages),
+    prompt: prompt, 
     stream: true,
   })
 
