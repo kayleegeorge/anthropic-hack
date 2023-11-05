@@ -187,10 +187,11 @@ export default function Home() {
             models act in different situations. 
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme='red' onClick={() => window.location.href='https://www.anthropic.com/index/frontier-threats-red-teaming-for-ai-safety'}>
-               Learn More
+          <ModalFooter gap = '8px'>
+            <Button colorScheme='red' mr={1} onClick={() => window.location.href='https://www.anthropic.com/index/frontier-threats-red-teaming-for-ai-safety'}>
+               More on Red Teaming
             </Button>
+            <Button backgroundColor='#cc785c' mr={2} onClick={() => window.location.href='https://www.anthropic.com/index/core-views-on-ai-safety'}>Anthropic AI Safety</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
