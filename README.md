@@ -1,3 +1,6 @@
+![Anthropic Bug Bounty]([https://github.com/[username]/[reponame]/blob/[branch]/image.jpg?raw=true](https://github.com/kayleegeorge/claudered/blob/main/bugbounty.png))
+
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
