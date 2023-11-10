@@ -112,7 +112,7 @@ export default function Home() {
   }
 
   const startPrompt = () => {
-    console.log(`The secret is: ${secret}`)
+    // console.log(`The secret is: ${secret}`)
     const mes: Message = {
       id: curatePrompt(mode),
       content: curatePrompt(mode),
