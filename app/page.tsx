@@ -102,7 +102,6 @@ export default function Home() {
   const handlePlayerModeSwitch = () => {
     if (playerMode == 'Blue') {
       setPlayerMode('Red')
-      setMessages([])
       startPrompt();
     }
     else {
@@ -112,6 +111,8 @@ export default function Home() {
   }
 
   const startPrompt = () => {
+    setWin(false)
+    setMessages([])
     // console.log(`The secret is: ${secret}`)
     const mes: Message = {
       id: curatePrompt(mode),
