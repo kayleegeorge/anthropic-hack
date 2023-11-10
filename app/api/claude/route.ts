@@ -1,14 +1,16 @@
-import { GameMode } from "@/app/page";
 import Anthropic from "@anthropic-ai/sdk";
 import { AnthropicStream, StreamingTextResponse } from "ai";
 
 // IMPORTANT: Needed to reduce latency for streaming.
 export const runtime = "edge";
 
-// Build a prompt from the messages
+// CLAUDE
+
+// Build a prompt from the messages in claude style
 function buildPrompt(
   messages: { content: string; role: "system" | "user" | "assistant" }[] 
 ) {
+
   return (
     messages
       .map(({ content, role }) => {
@@ -30,8 +32,6 @@ export async function POST(req: Request) {
     apiKey: process.env.ANTHROPIC_API_KEY ?? "",
   });
   const prompt = buildPrompt(messages);
-  console.log(prompt)
-  console.log('---------')
 
   const response = await anthropic.completions.create({
     model: "claude-2",
@@ -46,3 +46,5 @@ export async function POST(req: Request) {
   // Respond with the stream
   return new StreamingTextResponse(stream);
 }
+
+

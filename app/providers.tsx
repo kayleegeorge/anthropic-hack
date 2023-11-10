@@ -16,6 +16,8 @@ const GlobalStyles = css`
    }
 `;
 const theme = extendTheme({
+  initialColorMode: "dark",
+  useSystemColorMode: false,
   styles: {
     global: () => ({
       body: {
