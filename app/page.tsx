@@ -49,7 +49,7 @@ export default function Home() {
   const [playerMode, setPlayerMode] = useState<PlayerMode>("Red");
   
 
-  const [secret, setSecret] = useState<string>(generate({minLength: 4, maxLength: 12}) as string);
+  const [secret, setSecret] = useState<string>( generate({minLength: 4, maxLength: 12}) as string );
 
   // Rules
   const [rules, setRules] = useState<string>('');
