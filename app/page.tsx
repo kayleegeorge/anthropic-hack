@@ -14,7 +14,6 @@ import { generate, count } from "random-words";
 import { jetbrains } from "./_app";
 import { useChat } from "ai/react";
 import Footer from "./components/footer";
-import {isMobile} from 'react-device-detect';
 
 export type GameMode = "Game" | "Playground"; 
 export type PlayerMode = "Red" | "Blue";
@@ -152,11 +151,6 @@ export default function Home() {
       }
     }
   }, [messages]);
-
-  let directionBuild = 'row'
-  if (isMobile) {
-    directionBuild = 'column'
-  }
 
   return (
     <>
@@ -329,9 +323,10 @@ export default function Home() {
 
         </Flex>
       </Flex>
+      <Footer/>
     </Flex>
 
-      {!isMobile && <Footer/>}
+      
     </>
   );
 }
