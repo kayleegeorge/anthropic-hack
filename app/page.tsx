@@ -153,12 +153,9 @@ export default function Home() {
     }
   }, [messages]);
 
+  let directionBuild = 'row'
   if (isMobile) {
-    return (
-      <>
-      <Text color='white'>Not Mobile Friendly XD</Text>
-      </>
-    )
+    directionBuild = 'column'
   }
 
   return (
@@ -173,7 +170,7 @@ export default function Home() {
     >
       <Header />
       <Container height="40px"></Container>
-      <Flex>
+      <Flex flexWrap={'wrap'}>
         <Flex flexDirection={"column"} width="250px">
 
           <GameModeInstructions gameMode={mode} api={api} playerMode={playerMode}/>
@@ -228,7 +225,7 @@ export default function Home() {
         </Flex>
         </DarkMode>
         }
-      <Flex gap='8px' width='100%'>
+      <Flex gap='8px' width='100%' marginBottom={'20px'}>
 
         
 
@@ -313,7 +310,7 @@ export default function Home() {
               </Button>
             </Flex>
           </Flex>
-          
+
           {win && mode == 'Game' && 
           (
             <Text paddingTop="20px" margin={"auto"} color={"white"} paddingBottom={'20px'}>
@@ -334,7 +331,7 @@ export default function Home() {
       </Flex>
     </Flex>
 
-      <Footer/>
+      {!isMobile && <Footer/>}
     </>
   );
 }
