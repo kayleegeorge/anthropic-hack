@@ -19,7 +19,7 @@ export default function Footer() {
         <ModalHeader fontFamily={jetbrains.style.fontFamily} fontSize={'16px'} marginBottom={'-8px'}>AI Safety is important.</ModalHeader>
         <ModalCloseButton />
         <ModalBody fontFamily={jetbrains.style.fontFamily} fontSize={'14px'}>
-          Anthropic's AI Safety team researches both alignment capabilities and alignment science.
+          Anthropic&apos;s AI Safety team researches both alignment capabilities and alignment science.
           Exploration of alignment capabilities (i.e. developing new algorithms) is the goal of Blue Teaming, whereas the goal of Red Teaming is alignment science, understanding and explosing LLM limitations.
           Claudered is a red teaming vs. blue teaming playground for you to learn what it means to both take an adversarial mindset vs. a defensive mindset when prompting LLMs. 
           LLMs have very real consequences on human thought. As we increasingly rely on LLMs, not only is important for research engineers to thoroughly test and understand how models behave in different scenarios,
