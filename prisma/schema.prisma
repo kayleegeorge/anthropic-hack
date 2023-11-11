@@ -14,4 +14,8 @@ model Defense {
   id Int @id @default(autoincrement())
   author String
   defense String
+  attemps Int
+  fail Int
+  success Int
+  
 }
