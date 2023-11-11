@@ -7,17 +7,18 @@ import {
   Text,
 } from "@chakra-ui/layout";
 import Header from "./components/header";
-import { DarkMode, Divider, Input, InputGroup, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Textarea, background, useDisclosure } from "@chakra-ui/react";
+import { DarkMode, Divider, Input, InputGroup, Menu, MenuButton, MenuItem, MenuList, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Popover, PopoverArrow, PopoverBody, PopoverCloseButton, PopoverContent, PopoverHeader, PopoverTrigger, Textarea, background, useDisclosure, useMediaQuery } from "@chakra-ui/react";
 import { Button } from "@chakra-ui/react";
 import GameModeInstructions from "./components/gamemodeinstructions";
 import { generate, count } from "random-words";
 import { jetbrains } from "./_app";
 import { useChat } from "ai/react";
 import Footer from "./components/footer";
+import {isMobile} from 'react-device-detect';
 
 export type GameMode = "Game" | "Playground"; 
 export type PlayerMode = "Red" | "Blue";
-export type API = 'Claude' | 'GPT3.5';
+export type API = 'Claude' | 'GPT3.5' | 'Cohere' | 'HF';
 
 const style = {
   'backgroundColor': '#f0f0e9',
@@ -33,7 +34,8 @@ export type Message = {
 const API_ROUTE = {
   'Claude': '/api/claude',
   'GPT3.5': '/api/openai',
-  // 'Bard': '/api/bard'
+  'Cohere': '/api/cohere',
+  'HF': 'api/huggingface'
 }
 
 
@@ -86,7 +88,7 @@ export default function Home() {
 
   const [win, setWin] = useState<boolean>(false);
 
-  const handleSendToClaude = async () => {
+  const handleSendToAPI = async () => {
     // The new message.
     const m: Message = {
       id: input,
@@ -108,6 +110,11 @@ export default function Home() {
       setPlayerMode('Blue')
       setMessages([])
     }
+  }
+  
+  const changeAPI = (api: API) => {
+    setAPI(api)
+    startPrompt();
   }
 
   const startPrompt = () => {
@@ -145,6 +152,14 @@ export default function Home() {
       }
     }
   }, [messages]);
+
+  if (isMobile) {
+    return (
+      <>
+      <Text color='white'>Not Mobile Friendly XD</Text>
+      </>
+    )
+  }
 
   return (
     <>
@@ -202,7 +217,7 @@ export default function Home() {
         </Popover> */}
         {playerMode == 'Blue' && 
         <DarkMode>
-        <Flex gap='4px' flexDirection={'column'}>
+        <Flex gap='6px' flexDirection={'column'}>
         <Textarea fontSize='12px' 
         value={rules}
         onChange={handleRulesChange}
@@ -225,8 +240,10 @@ export default function Home() {
                   {api}
                 </MenuButton>
                 <MenuList background={'#343541'}>
-                  <MenuItem onClick={() => setAPI('Claude')} style={{'background':'#343541'}}  _focus={{backgroundColor: '#454654 !important'}}>Claude</MenuItem>
-                  <MenuItem onClick={() => setAPI('GPT3.5')} style={{'background':'#343541'}} _focus={{backgroundColor: '#454654 !important'}} >GPT3.5*</MenuItem> 
+                  <MenuItem onClick={() => changeAPI('Claude')} style={{'background':'#343541'}}  _focus={{backgroundColor: '#454654 !important'}}>Claude</MenuItem>
+                  <MenuItem onClick={() => changeAPI('GPT3.5')} style={{'background':'#343541'}} _focus={{backgroundColor: '#454654 !important'}} >GPT3.5*</MenuItem>
+                  <MenuItem onClick={() => changeAPI('HF')} style={{'background':'#343541'}} _focus={{backgroundColor: '#454654 !important'}}>Hugging Face</MenuItem> 
+                  {/* <MenuItem onClick={() => changeAPI('Cohere')} style={{'background':'#343541'}} _focus={{backgroundColor: '#454654 !important'}}>Cohere</MenuItem>  */}
                   {/* <MenuItem onClick={() => setAPI('Bard')} style={{'background':'#343541'}} _focus={{backgroundColor: '#454654 !important'}}>Bard</MenuItem> */}
                 </MenuList>
               </>
@@ -239,27 +256,6 @@ export default function Home() {
           </DarkMode>
       </Flex>  
 
-          
-
-      {/* <Button size="sm" backgroundColor="lightgray" marginTop={'20px'} >
-            Claude vs. Claude
-          </Button> */}
-
-      {/* <Accordion allowToggle marginTop='20px' color={'gray'}>
-              <AccordionItem color={'gray'}>
-                  <AccordionButton _expanded={{ color: 'white', border: 'white' }} border={'gray'}>
-                    <Box as="span" flex='1' textAlign='left' color={'#cc785c'} fontSize={14}>
-                    Add custom prompt rules
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                <AccordionPanel>
-                <Textarea height= '20px' fontSize='12' placeholder='Add rules separated by comma' value={rules}
-                  onChange={handleRulesChange} color={'white'}/>
-                </AccordionPanel>
-              </AccordionItem>
-            </Accordion> */}
-    
         </Flex>
         <Flex flexDirection={"column"} width={"650px"} margin={"auto"}>
           <Text marginBottom={"8px"} width={"100%"}>{playerMode == 'Red' ? 'Break ' : 'Defend '} {api}</Text>
@@ -310,17 +306,18 @@ export default function Home() {
               />
               <Button
                 height="38px"
-                onClick={handleSendToClaude}
+                onClick={handleSendToAPI}
                 backgroundColor={"#454654"}
               >
                 <PaperPlaneRight color="#E53E3E" size={20} />
               </Button>
             </Flex>
           </Flex>
+          
           {win && mode == 'Game' && 
           (
             <Text paddingTop="20px" margin={"auto"} color={"white"} paddingBottom={'20px'}>
-              YOU GOT CLAUDE TO REVEAL THE SECRET: {secret}
+              YOU GOT {api} TO REVEAL THE SECRET: {secret}
             </Text>
           )}
           {win && mode == 'Game' && (
@@ -337,7 +334,7 @@ export default function Home() {
       </Flex>
     </Flex>
 
-      {/* <Footer/> */}
+      <Footer/>
     </>
   );
 }
