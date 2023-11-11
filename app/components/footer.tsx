@@ -7,7 +7,7 @@ import { Button, DarkMode, Link, Modal, ModalBody, ModalCloseButton, ModalConten
 export default function Footer() {
     const { isOpen, onOpen, onClose } = useDisclosure()
     return (
-        <Flex left={0} right={0} bottom={0} height={'100%'} >
+        <Flex left={0} right={0} bottom={0} height={'100%'} paddingTop='20px'>
         <DarkMode>
         <Button size="sm" onClick={onOpen} fontWeight={'light'} color={'gray'} marginTop={'auto'}>
           LLM safety 
